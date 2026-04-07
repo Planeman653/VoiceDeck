@@ -1,7 +1,6 @@
 """Audio queue for sequential playback"""
 from typing import List, Optional
 from dataclasses import dataclass
-import pygame
 
 
 @dataclass

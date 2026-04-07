@@ -14,7 +14,7 @@ A voice-activated audio player for Windows that uses local AI to recognize voice
 ## Installation
 
 1. **Clone or download** this repository
-2. **Create a virtual environment**:
+2. **Create a virtual environment** (optional but recommended):
    ```bash
    python -m venv venv
    venv\Scripts\activate
@@ -23,22 +23,20 @@ A voice-activated audio player for Windows that uses local AI to recognize voice
    ```bash
    pip install -r requirements.txt
    ```
-4. **Download Whisper model** (first run will auto-download):
-   - The app will download a ~75MB "tiny" model automatically
-   - For better accuracy, use `small` (~140MB) or `base` (~140MB) in Settings
-
-## Usage
-
-1. **Launch the app**:
+4. **Run the app**:
    ```bash
    python main.py
    ```
-   Or create a shortcut: `python main.py --window-mode`
+
+The app will auto-download the Whisper model (~75MB) on first run.
+
+## Usage
+
+1. **Launch the app**: `python main.py`
 
 2. **Add audio files**:
    - Click "Upload MP3" or drag MP3 files into the app folder
-   - Set trigger phrases for each file
-   - The trigger is auto-detected from the filename
+   - Set trigger phrases for each file (auto-detected from filename)
 
 3. **Configure AI**:
    - Go to Settings tab
@@ -47,23 +45,7 @@ A voice-activated audio player for Windows that uses local AI to recognize voice
    - Enable/disable microphone listening
 
 4. **Use voice commands**:
-   - Click microphone toggle in Settings
-   - Say your trigger phrases
-   - App will play matching audio files
-
-2. **Add audio files**:
-   - Click "Upload MP3" or drag MP3 files into the app folder
-   - Set trigger phrases for each file
-   - The trigger is auto-detected from the filename
-
-3. **Configure AI**:
-   - Go to Settings tab
-   - Adjust sensitivity (0-100)
-   - Select AI model size
-   - Enable/disable microphone listening
-
-4. **Use voice commands**:
-   - Click microphone toggle in Settings
+   - Toggle microphone listening
    - Say your trigger phrases
    - App will play matching audio files
 
@@ -83,7 +65,7 @@ VoiceDeck/
 │   └── audio_streamer.py         # Microphone audio stream
 ├── audio_manager/       # Audio playback
 │   ├── __init__.py
-│   ├── audio_player.py  # Audio playback control
+│   ├── audio_player.py  # Audio playback control (winsound)
 │   └── audio_queue.py   # Queue management
 ├── ui/                  # PyQt6 UI components
 │   ├── __init__.py
@@ -101,13 +83,10 @@ VoiceDeck/
 
 ## Testing
 
-Run the following to test imports (you'll need to install dependencies first):
+Verify imports work:
 ```bash
-pip install -r requirements.txt
-python -c "import sys; sys.path.insert(0, '.'); from ai_engine import WhisperTranscriber, TriggerClassifier; print('Imports OK')"
+python -c "from ai_engine import WhisperTranscriber, TriggerClassifier; print('OK')"
 ```
-
-The app will auto-download the Whisper model (~75MB) on first run.
 
 ## AI Model
 
@@ -125,40 +104,26 @@ The app will auto-download the Whisper model (~75MB) on first run.
 
 - Python 3.8+
 - Windows 10/11
+- Internet connection for first-time model download
 - Microphone (for voice activation)
 - Speakers (for audio output)
+
+## Note on Audio Playback
+
+This app uses Windows built-in `winsound` for notifications. For full MP3 playback:
+- Configure your system to use a media player for audio files
+- The app uses beep notifications to indicate tracks are queued
+
+To implement full audio playback, you can integrate with Windows Media Player or similar.
 
 ## Creating an Executable
 
 To create a standalone executable:
 ```bash
 pip install pyinstaller
-pyinstaller --windowed --name VoiceDeck --icon=app.ico main.py
+pyinstaller --windowed --name VoiceDeck main.py
 ```
-
-## Tray Icon
-
-The app uses a simple tray icon. You can customize it by:
-1. Placing an icon file in `assets/icons/app.ico`
-2. Modifying `_create_icon()` in `tray.py`
 
 ## License
 
 MIT License - See LICENSE file
-
-## Troubleshooting
-
-- **Whisper not found**: Run `pip install -r requirements.txt`
-- **Microphone not working**: Check Windows privacy settings
-- **Audio distortion**: Reduce volume or upgrade audio hardware
-- **Model too large**: Consider using smaller models for limited storage
-- **No triggers matching**: Check sensitivity slider (0=exact, 100=loose)
-- **Audio doesn't play**: Check output device and app volume
-- **UI looks different**: Ensure PyQt6 is properly installed
-
-## Additional Notes
-
-- The app requires a working internet connection for first-time model download
-- The tiny Whisper model takes ~75MB; larger models take more space
-- Windows 10/11 only - tested on Windows 11
-- MP3 files only (other formats not supported)

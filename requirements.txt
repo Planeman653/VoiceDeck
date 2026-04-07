@@ -1,21 +1,20 @@
 # VoiceDeck - Voice-Activated Audio Player
+#
+# Install dependencies:
+# pip install -r requirements.txt
+#
+# Note: torch will be installed from CPU version for Windows compatibility
+# First run will download Whisper model (~75MB) automatically
+
 # Core dependencies
 PyQt6>=6.6.0
 faster-whisper>=1.0.0
-pyaudio>=0.2.13
 numpy>=1.24.0
-torch>=2.0.0  # Required for whisper
-
-# Audio playback
-pygame>=2.5.0
+torch>=2.0.0
 
 # Tray icon
 pystray>=0.19.0
 
 # Optional: for MP3 encoding
 mutagen>=1.46.0
-
-# PyAudio system dependencies
-# On Windows, these may need to be installed separately:
-# pip install sounddevice
 

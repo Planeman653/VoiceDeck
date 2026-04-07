@@ -1,7 +1,7 @@
 """Tray icon for app (simple minimize/close)"""
 import sys
-from PyQt6.QtWidgets import QSystemTrayIcon, QAction
-from PyQt6.QtGui import QIcon
+from PyQt6.QtWidgets import QSystemTrayIcon
+from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtCore import Qt
 
 

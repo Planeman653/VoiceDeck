@@ -1,21 +1,22 @@
 """Spotify-style media bar for playback controls"""
 import sys
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QPushButton, QLabel, QSlider, QApplication
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QFont
+from PyQt6.QtCore import Qt
 
 
 class MediaBar(QWidget):
     """Persistent media controls bar"""
 
-    play_requested = Qt.UserSignal()
-    pause_requested = Qt.UserSignal()
-    stop_requested = Qt.UserSignal()
-    next_requested = Qt.UserSignal()
-    prev_requested = Qt.UserSignal()
-    volume_changed = Qt.UserSignal(int)
-    status_changed = Qt.UserSignal(str)
-    track_changed = Qt.UserSignal(str)
+    play_requested = pyqtSignal()
+    pause_requested = pyqtSignal()
+    stop_requested = pyqtSignal()
+    next_requested = pyqtSignal()
+    prev_requested = pyqtSignal()
+    volume_changed = pyqtSignal(int)
+    status_changed = pyqtSignal(str)
+    track_changed = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
@@ -43,7 +44,7 @@ class MediaBar(QWidget):
         self.track_label = QLabel("No track loaded")
         self.track_label.setFixedWidth(200)
         self.track_label.setFont(QFont("Arial", 10))
-        self.track_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.track_label.setAlignment(Qt.Alignment.AlignCenter)
 
         # Volume slider
         self.volume_slider = QSlider(Qt.Orientation.Horizontal)
