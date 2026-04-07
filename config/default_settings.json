@@ -1,0 +1,9 @@
+{
+  "audio_folder": "resources/audio",
+  "default_volume": 1.0,
+  "ai_model": "tiny",
+  "sensitivity": 50,
+  "enable_listening": true,
+  "language": "en",
+  "theme": "dark"
+}

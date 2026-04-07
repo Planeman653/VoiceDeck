@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(python main.py --help)",
+      "Bash(python -c \"import sys; sys.path.insert\\(0, '.'\\); from ai_engine import WhisperTranscriber, TriggerClassifier, AudioStreamer; print\\('AI Engine: OK'\\)\")",
+      "Bash(python -c \"import sys; sys.path.insert\\(0, '.'\\); from ai_engine import WhisperTranscriber, TriggerClassifier; print\\('AI Engine imports OK'\\)\")",
+      "Bash(python -c \"import sys; sys.path.insert\\(0, '.'\\); from ai_engine import WhisperTranscriber, TriggerClassifier; from audio_manager import AudioPlayer, AudioQueue; from ui import MainWindow, MediaBar; print\\('All imports successful!'\\)\")",
+      "Bash(git add:*)",
+      "Bash(git reset:*)"
+    ]
+  }
+}
