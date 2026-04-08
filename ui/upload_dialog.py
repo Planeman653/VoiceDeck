@@ -14,6 +14,7 @@ class UploadDialog(QDialog):
         super().__init__(parent)
         self.trigger_classifier = trigger_classifier
         self.audio_queue = audio_queue
+        self.parent_window = parent
         self.setup_ui()
 
     def setup_ui(self) -> None:
@@ -78,9 +79,9 @@ class UploadDialog(QDialog):
                 "Please select MP3 files to upload.")
             return
 
-        # Add each file to trigger classifier and queue
+        # Add each file to trigger classifier and audio list page
         import os
-        for i, filepath in enumerate(filenames):
+        for filepath in filenames:
             filename = os.path.basename(filepath)
             # Generate trigger from filename
             trigger = filename.replace(".mp3", "").replace("_", " ").replace("-", " ")
@@ -89,9 +90,11 @@ class UploadDialog(QDialog):
             if self.trigger_classifier:
                 self.trigger_classifier.add_trigger(filename, trigger)
 
-        # Notify main window that files were added
-        if hasattr(self, 'parent') and self.parent():
-            self.parent().on_audio_loaded(filenames[0], 0)
+            # Add to audio list page
+            if self.parent_window and self.parent_window.tabs:
+                audio_page = self.parent_window.tabs.widget(0)
+                if audio_page:
+                    audio_page.add_file(filename, trigger, 1.0, True)
 
         QMessageBox.information(self, "Files Uploaded",
             f"Successfully uploaded {len(filenames)} MP3 file(s)!\n"

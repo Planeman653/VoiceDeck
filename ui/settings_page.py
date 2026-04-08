@@ -21,11 +21,13 @@ class SettingsPage(QWidget):
         """Set up the settings page"""
         layout = QVBoxLayout(self)
         layout.setSpacing(15)
+        layout.setContentsMargins(15, 10, 15, 10)
 
         # AI Settings Section
         ai_section = QWidget()
         ai_layout = QVBoxLayout(ai_section)
         ai_layout.setSpacing(10)
+        ai_layout.setContentsMargins(5, 5, 5, 5)
 
         title_label = QLabel("AI Settings")
         title_label.setFont(QFont("Arial", 14, QFont.Weight.Bold))

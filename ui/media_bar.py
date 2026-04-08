@@ -26,7 +26,8 @@ class MediaBar(QWidget):
     def setup_ui(self) -> None:
         """Set up the media bar UI"""
         self.main_layout = QHBoxLayout(self)
-        self.main_layout.setContentsMargins(0, 0, 0, 0)
+        # Add top and bottom margin so media bar isn't cut off
+        self.main_layout.setContentsMargins(0, 6, 0, 6)
         self.main_layout.setSpacing(8)
 
         # Play/Pause button
@@ -68,6 +69,8 @@ class MediaBar(QWidget):
         self.main_layout.addWidget(self.volume_slider)
         self.main_layout.addWidget(self.volume_label)
 
+        # Add top margin so media bar isn't cut off
+        self.main_layout.setContentsMargins(0, 4, 0, 0)
         self.main_layout.addStretch()
 
     def play(self) -> None:
