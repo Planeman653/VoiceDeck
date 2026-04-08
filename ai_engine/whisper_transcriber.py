@@ -33,7 +33,7 @@ class WhisperTranscriber:
             try:
                 import whisper
                 self.model = whisper.load_model(
-                    model_name=self.model_name,
+                    self.model_name,
                     device=self.device
                 )
             except ImportError as e:
@@ -55,7 +55,7 @@ class WhisperTranscriber:
 
         import whisper
         if hasattr(self.model, 'device') and self.model.device != self.device:
-            self.model = whisper.load_model(model_name=self.model_name, device=self.device)
+            self.model = whisper.load_model(self.model_name, device=self.device)
 
         result = self.model.transcribe(
             audio_path,
@@ -88,7 +88,7 @@ class WhisperTranscriber:
             self._load_model()
 
         if hasattr(self.model, 'device') and self.model.device != self.device:
-            self.model = whisper.load_model(model_name=self.model_name, device=self.device)
+            self.model = whisper.load_model(self.model_name, device=self.device)
 
         # Save to temp file and transcribe
         import tempfile

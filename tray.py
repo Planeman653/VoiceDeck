@@ -48,15 +48,16 @@ class SimpleTray:
 
         return QIcon(pixmap)
 
-    def _create_context_menu(self) -> QSystemTrayIcon.QContextMenu:
+    def _create_context_menu(self):
         """Create system tray context menu"""
-        menu = self.tray_icon.createContextMenu()
+        from PyQt6.QtWidgets import QMenu
+        menu = QMenu()
 
-        show_action = QAction("Show Window", self)
+        show_action = QAction("Show Window", self.window)
         show_action.triggered.connect(self._show_window)
         menu.addAction(show_action)
 
-        quit_action = QAction("Quit", self)
+        quit_action = QAction("Quit", self.window)
         quit_action.triggered.connect(self.app.quit)
         menu.addAction(quit_action)
 

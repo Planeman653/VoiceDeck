@@ -147,10 +147,10 @@ class SettingsPage(QWidget):
         sensitivity = self.sensitivity_slider.value() / 100.0
         language = self.lang_combo.currentText()
 
-        self.config.set("sensitivity", sensitivity)
-        self.config.set("ai_model", self.model_combo.currentText())
-        self.config.set("language", language)
-        self.config.set("enable_listening", self.listen_checkbox.isChecked())
+        self.config["sensitivity"] = sensitivity
+        self.config["ai_model"] = self.model_combo.currentText()
+        self.config["language"] = language
+        self.config["enable_listening"] = self.listen_checkbox.isChecked()
 
         QMessageBox.information(self, "Settings Saved", "Settings saved successfully!")
 

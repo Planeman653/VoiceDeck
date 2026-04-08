@@ -54,6 +54,7 @@ def main():
     trigger_classifier.set_sensitivity(config.get("sensitivity", 50) / 100.0)
 
     # Create audio streamer for microphone (if pyaudio is available)
+    audio_streamer = None
     if AudioStreamer:
         audio_streamer = AudioStreamer(
             classifier=trigger_classifier,
