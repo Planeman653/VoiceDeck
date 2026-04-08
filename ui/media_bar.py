@@ -44,7 +44,7 @@ class MediaBar(QWidget):
         self.track_label = QLabel("No track loaded")
         self.track_label.setFixedWidth(200)
         self.track_label.setFont(QFont("Arial", 10))
-        self.track_label.setAlignment(Qt.Alignment.AlignCenter)
+        self.track_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Volume slider
         self.volume_slider = QSlider(Qt.Orientation.Horizontal)

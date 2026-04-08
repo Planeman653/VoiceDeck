@@ -5,6 +5,7 @@ Main application entry point
 import sys
 import json
 from pathlib import Path
+from PyQt6.QtWidgets import QApplication
 
 # Add parent directory to path for imports
 SCRIPT_DIR = Path(__file__).parent

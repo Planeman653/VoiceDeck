@@ -11,7 +11,10 @@
       "Bash(git config:*)",
       "Bash(git commit:*)",
       "Bash(pip install:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(xcopy \"C:\\\\Users\\\\james\\\\Desktop\\\\Coding\\\\Projects\\\\VoiceDeck\\\\*.*\" \"C:\\\\Users\\\\james\\\\Downloads\\\\VoiceDeck-0.0.2\\\\\\\\\" /E /I /Y)",
+      "Bash(copy:*)",
+      "Bash(git push:*)"
     ]
   }
 }
