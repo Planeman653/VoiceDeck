@@ -60,14 +60,17 @@ class MainWindow(QMainWindow):
 
         # Audio list tab (library)
         self.audio_page = AudioListPage(self.trigger_classifier, self.audio_queue)
-        self.tabs.addTab(self.audio_page, "Library", "Ctrl+1")
+        self.tabs.addTab(self.audio_page, "Library")
+        self.tabs.setTabToolTip(0, "Ctrl+1")
+
 
         # Settings tab
         self.settings_page = SettingsPage(
             self.trigger_classifier,
             self.config
         )
-        self.tabs.addTab(self.settings_page, "Settings", "Ctrl+2")
+        self.tabs.addTab(self.settings_page, "Settings")
+        self.tabs.setTabToolTip(1, "Ctrl+2")
 
         # Upload button
         self.upload_btn = QPushButton("Upload MP3")

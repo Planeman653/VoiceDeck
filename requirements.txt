@@ -12,6 +12,7 @@ faster-whisper>=1.0.0
 whisper>=1.0.0  # Required by faster-whisper
 numpy>=1.24.0
 torch>=2.0.0
+openai-whisper>=20250625
 
 # Tray icon
 pystray>=0.19.0
