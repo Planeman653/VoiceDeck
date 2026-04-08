@@ -86,9 +86,9 @@ class UploadDialog(QDialog):
             # Generate trigger from filename
             trigger = filename.replace(".mp3", "").replace("_", " ").replace("-", " ")
 
-            # Add to trigger classifier
+            # Add to trigger classifier with default volume
             if self.trigger_classifier:
-                self.trigger_classifier.add_trigger(filename, trigger)
+                self.trigger_classifier.add_trigger(filename, trigger, volume=1.0)
 
             # Add to audio list page
             if self.parent_window and self.parent_window.tabs:

@@ -20,14 +20,13 @@ class SettingsPage(QWidget):
     def setup_ui(self) -> None:
         """Set up the settings page"""
         layout = QVBoxLayout(self)
-        layout.setSpacing(15)
-        layout.setContentsMargins(15, 10, 15, 10)
+        layout.setSpacing(12)
+        layout.setContentsMargins(12, 5, 12, 5)  # Compact margins
 
         # AI Settings Section
         ai_section = QWidget()
         ai_layout = QVBoxLayout(ai_section)
-        ai_layout.setSpacing(10)
-        ai_layout.setContentsMargins(5, 5, 5, 5)
+        ai_layout.setSpacing(8)
 
         title_label = QLabel("AI Settings")
         title_label.setFont(QFont("Arial", 14, QFont.Weight.Bold))
@@ -57,6 +56,12 @@ class SettingsPage(QWidget):
         self.sensitivity_slider.setRange(0, 100)
         self.sensitivity_slider.setValue(50)  # Default 50%
         self.sensitivity_slider.setSingleStep(5)
+        self.sensitivity_slider.setFixedHeight(30)  # Compact height
+        self.sensitivity_slider.setStyleSheet("""
+            QSpinBox {
+                padding: 2px 6px;
+            }
+        """)
         self.sensitivity_slider.valueChanged.connect(self._on_sensitivity_changed)
         sensitivity_layout.addWidget(self.sensitivity_slider, stretch=1)
 

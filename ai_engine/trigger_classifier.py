@@ -25,12 +25,13 @@ class TriggerClassifier:
         """Set sensitivity (0.0 = exact match, 1.0 = very loose)"""
         self.sensitivity = max(0.0, min(1.0, value))
 
-    def add_trigger(self, filename: str, trigger_phrase: str = None) -> None:
+    def add_trigger(self, filename: str, trigger_phrase: str = None, volume: float = 1.0) -> None:
         """Register a trigger phrase for an audio file
 
         Args:
             filename: Audio file name (without extension)
             trigger_phrase: Phrase to trigger playback. If None, auto-generate from filename
+            volume: Default volume for this trigger
         """
         # Generate trigger from filename if not provided
         if trigger_phrase is None:
@@ -40,6 +41,7 @@ class TriggerClassifier:
         self.triggers[filename] = {
             "trigger_phrase": trigger_phrase,
             "description": trigger_phrase,
+            "volume": volume,
             "enabled": True
         }
 
@@ -164,6 +166,29 @@ class TriggerClassifier:
             "language": result.get("language", language or "unknown"),
             "chunks": result.get("chunks", [])
         }
+
+    def update_trigger(self, filename: str, trigger_phrase: str) -> None:
+        """Update trigger phrase for a file"""
+        if filename in self.triggers:
+            self.triggers[filename]["trigger_phrase"] = trigger_phrase
+            self.triggers[filename]["description"] = trigger_phrase
+
+    def update_volume(self, filename: str, volume: float) -> None:
+        """Update volume for a file"""
+        if filename in self.triggers:
+            self.triggers[filename]["volume"] = volume
+
+    def set_volume(self, filename: str, volume: float) -> None:
+        """Set default volume for a file"""
+        if filename not in self.triggers:
+            self.triggers[filename] = {
+                "trigger_phrase": "",
+                "description": "",
+                "volume": volume,
+                "enabled": True
+            }
+        elif "volume" not in self.triggers[filename]:
+            self.triggers[filename]["volume"] = volume
 
     def reset(self) -> None:
         """Clear last transcription"""

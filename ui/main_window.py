@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
     def setup_ui(self) -> None:
         """Set up the main window UI"""
         self.setWindowTitle("VoiceDeck - Voice Activated Audio Player")
-        self.setMinimumSize(600, 400)
+        self.setMinimumSize(600, 450)  # Increased height for more content space
 
         # Central widget with main layout
         central_widget = QWidget()
@@ -56,13 +56,13 @@ class MainWindow(QMainWindow):
 
         # Tab widget for main content
         self.tabs = QTabWidget()
-        self.tabs.tabBar().setFixedHeight(40)
+        self.tabs.tabBar().setFixedHeight(30)  # Reduced height
+        self.tabs.tabBar().setDocumentMode(True)  # Smaller, more compact tabs
 
         # Audio list tab (library)
         self.audio_page = AudioListPage(self.trigger_classifier, self.audio_queue)
         self.tabs.addTab(self.audio_page, "Library")
         self.tabs.setTabToolTip(0, "Ctrl+1")
-
 
         # Settings tab
         self.settings_page = SettingsPage(
@@ -71,6 +71,9 @@ class MainWindow(QMainWindow):
         )
         self.tabs.addTab(self.settings_page, "Settings")
         self.tabs.setTabToolTip(1, "Ctrl+2")
+
+        # Connect row selection to media bar
+        self.audio_page.current_file_changed.connect(self.on_file_selected)
 
         # Upload button
         self.upload_btn = QPushButton("Upload MP3")
@@ -167,6 +170,12 @@ class MainWindow(QMainWindow):
             self.media_bar.pause()
         else:
             self.media_bar.play()
+
+    def on_file_selected(self, filename: str) -> None:
+        """Load selected file into media bar"""
+        if filename:
+            self.media_bar.set_track(filename)
+            self.status_bar.setText(f"Ready: {filename}")
 
     def get_audio_queue(self) -> "AudioQueue":
         """Get audio queue"""
