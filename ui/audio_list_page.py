@@ -60,7 +60,10 @@ class AudioListPage(QWidget):
         self.table = QTableWidget()
         self.table.setColumnCount(4)
         self.table.setHorizontalHeaderLabels(["Filename", "Trigger Phrase", "Volume", "Status"])
-        self.table.horizontalHeaderItem(2).setStretchFactor(2, 1)
+        # Set column 3 to stretch (last column with checkbox)
+        header = self.table.horizontalHeader()
+        if header:
+            header.setStretchLastSection(True)
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.table.setItemSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.table.setAlternatingRowColors(True)
