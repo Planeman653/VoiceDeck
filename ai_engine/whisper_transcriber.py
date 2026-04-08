@@ -16,7 +16,12 @@ class WhisperTranscriber:
             device: Device to run inference on (cpu/cuda)
         """
         self.model_name = model_name
-        self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+        # Try to detect CUDA, fall back to CPU if torch not available
+        try:
+            import torch
+            self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+        except ImportError:
+            self.device = device or "cpu"
         self.model = None
         self._loaded = False
         self._lock = threading.Lock()
@@ -26,7 +31,6 @@ class WhisperTranscriber:
         """Load Whisper model in a thread"""
         def load():
             try:
-                import torch
                 import whisper
                 self.model = whisper.load_model(
                     model_name=self.model_name,
@@ -49,7 +53,6 @@ class WhisperTranscriber:
         if not self.model:
             self._load_model()
 
-        import torch
         import whisper
         if hasattr(self.model, 'device') and self.model.device != self.device:
             self.model = whisper.load_model(model_name=self.model_name, device=self.device)
@@ -80,7 +83,6 @@ class WhisperTranscriber:
         Returns:
             List of transcribed text chunks
         """
-        import torch
         import whisper
         if not self.model:
             self._load_model()
@@ -106,9 +108,13 @@ class WhisperTranscriber:
 
     def get_model_info(self) -> dict:
         """Get model information"""
-        import torch
+        try:
+            import torch
+            has_cuda = torch.cuda.is_available() if self.device == "cuda" else False
+        except ImportError:
+            has_cuda = False
         return {
             "model_name": self.model_name,
             "device": self.device,
-            "has_cuda": torch.cuda.is_available() if self.device == "cuda" else False
+            "has_cuda": has_cuda
         }
