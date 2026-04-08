@@ -4,6 +4,7 @@ from typing import List, Optional
 
 
 class TriggerClassifier:
+    MODEL_SIZES = ["tiny", "base", "small", "medium", "large"]
     """
     Classifies transcribed speech against registered trigger phrases.
     Uses configurable sensitivity for fuzzy matching.

@@ -157,7 +157,7 @@ class SettingsPage(QWidget):
     def load_config(self) -> None:
         """Load current config values"""
         self.model_combo.setCurrentText(self.config.get("ai_model", "tiny"))
-        self.sensitivity_slider.setValue(int(self.config.get("sensitivity", 50)))
+        self.sensitivity_slider.setValue(int(self.config.get("sensitivity", 0.5) * 100))
         self.sensitivity_value.setText(str(self.sensitivity_slider.value()))
         self.lang_combo.setCurrentText(self.config.get("language", "en"))
         self.listen_checkbox.setChecked(self.config.get("enable_listening", True))
