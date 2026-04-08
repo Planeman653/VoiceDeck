@@ -10,8 +10,10 @@ from PyQt6.QtCore import Qt
 class UploadDialog(QDialog):
     """Dialog for uploading audio files"""
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, trigger_classifier=None, audio_queue=None):
         super().__init__(parent)
+        self.trigger_classifier = trigger_classifier
+        self.audio_queue = audio_queue
         self.setup_ui()
 
     def setup_ui(self) -> None:
@@ -65,16 +67,34 @@ class UploadDialog(QDialog):
             self.on_files_selected(files)
 
     def on_files_selected(self, files: list) -> None:
-        """Handle files selected"""
+        """Handle files selected - actually add them to library"""
         if not files:
             return
 
-        # For now, just show confirmation
+        # Filter MP3 files
         filenames = [f for f in files if f.lower().endswith(".mp3")]
-        if filenames:
-            QMessageBox.information(self, "Files Selected",
-                f"You selected {len(filenames)} MP3 file(s).\n"
-                "For now, drag and drop them into the app folder\n"
-                "or set the audio folder path in Settings.")
+        if not filenames:
+            QMessageBox.information(self, "No MP3 Files",
+                "Please select MP3 files to upload.")
+            return
+
+        # Add each file to trigger classifier and queue
+        import os
+        for i, filepath in enumerate(filenames):
+            filename = os.path.basename(filepath)
+            # Generate trigger from filename
+            trigger = filename.replace(".mp3", "").replace("_", " ").replace("-", " ")
+
+            # Add to trigger classifier
+            if self.trigger_classifier:
+                self.trigger_classifier.add_trigger(filename, trigger)
+
+        # Notify main window that files were added
+        if hasattr(self, 'parent') and self.parent():
+            self.parent().on_audio_loaded(filenames[0], 0)
+
+        QMessageBox.information(self, "Files Uploaded",
+            f"Successfully uploaded {len(filenames)} MP3 file(s)!\n"
+            "They will now appear in the Library tab.")
 
         self.accept()

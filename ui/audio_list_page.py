@@ -14,7 +14,7 @@ class AudioListPage(QWidget):
     file_loaded = pyqtSignal(str)
     file_activated = pyqtSignal(str)
 
-    def __init__(self, trigger_classifier, audio_queue):
+    def __init__(self, trigger_classifier=None, audio_queue=None):
         super().__init__()
         self.trigger_classifier = trigger_classifier
         self.audio_queue = audio_queue
@@ -82,11 +82,39 @@ class AudioListPage(QWidget):
 
     def _on_browse(self) -> None:
         """Handle folder browser"""
-        msg_box = QMessageBox()
-        msg_box.information(self, "Folder Selection",
-            "For now, drag and drop MP3 files into the app folder,\n"
-            "or use Settings to set the audio folder path.")
-        msg_box.exec()
+        folder, _ = QFileDialog.getExistingDirectory(
+            self,
+            "Select Audio Folder",
+            "Music"
+        )
+        if folder:
+            self._load_from_folder(folder)
+
+    def _load_from_folder(self, folder: str) -> None:
+        """Load all MP3 files from a folder"""
+        from pathlib import Path
+        folder_path = Path(folder)
+
+        mp3_files = sorted(folder_path.glob("*.mp3"))
+
+        if mp3_files:
+            # Clear existing table
+            self.table.setRowCount(0)
+
+            # Add each file
+            for i, mp3_file in enumerate(mp3_files):
+                filename = mp3_file.name
+                # Generate trigger from filename
+                trigger = filename.replace(".mp3", "").replace("_", " ").replace("-", " ")
+
+                self.add_file(filename, trigger, 1.0, True)
+
+                # Add to trigger classifier
+                if self.trigger_classifier:
+                    self.trigger_classifier.add_trigger(filename, trigger)
+        else:
+            QMessageBox.information(self, "No Files Found",
+                f"No MP3 files found in:\n{folder}")
 
     def _on_filter(self) -> None:
         """Handle filter"""
@@ -116,35 +144,12 @@ class AudioListPage(QWidget):
         vol_item = QTableWidgetItem(f"{volume:.1f}x")
         self.table.setItem(row, 2, vol_item)
 
-        # Enabled checkbox
-        cb_item = QTableWidgetItem()
-        cb_widget = QCheckBox(enabled)
-        cb_widget.setChecked(enabled)
-        cb_widget.setStyleSheet("QCheckBox { padding: 4px; }")
-        cb_widget.stateChanged.connect(
-            lambda checked: self.on_enabled_changed(row, checked)
-        )
-        self.table.setCellWidget(row, 3, cb_widget)
-
-        # Store trigger data
-        self.table.setItemData(
-            row,
-            (filename, trigger_phrase, volume, enabled),
-            Qt.ItemDataRole.UserRole
-        )
+        # Enabled column
+        enabled_item = QTableWidgetItem()
+        self.table.setItem(row, 3, enabled_item)
 
         # Update count
         self.file_count_label.setText(f"{self.table.rowCount()} files loaded")
-
-    def on_enabled_changed(self, row: int, enabled: bool) -> None:
-        """Handle enabled checkbox change"""
-        data = self.table.itemData(row, Qt.ItemDataRole.UserRole)
-        if data:
-            filename, trigger, volume, _ = data
-            if not enabled:
-                self.trigger_classifier.remove_trigger(filename)
-            else:
-                self.trigger_classifier.add_trigger(filename, trigger)
 
     def clear(self) -> None:
         """Clear library"""

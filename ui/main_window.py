@@ -123,7 +123,11 @@ class MainWindow(QMainWindow):
 
     def _on_upload(self) -> None:
         """Handle upload button click"""
-        dialog = UploadDialog(self)
+        dialog = UploadDialog(
+            self,
+            trigger_classifier=self.trigger_classifier,
+            audio_queue=self.audio_queue
+        )
         dialog.exec()
 
     def on_audio_loaded(self, filename: str, count: int = 0) -> None:
