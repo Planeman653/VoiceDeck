@@ -22,7 +22,8 @@
       "Bash(\"C:\\\\Python314\\\\python.exe\" -c \"from audio_manager import AudioPlayer; print\\('OK'\\)\")",
       "Bash('C:\\\\Python314\\\\python.exe' -c ':*)",
       "Bash(\"C:\\\\Python314\\\\python.exe\" -c \"from ui import SettingsPage; print\\('SettingsPage import OK'\\)\")",
-      "Bash(taskstop task=bnx4zgf4s:*)"
+      "Bash(taskstop task=bnx4zgf4s:*)",
+      "Bash(echo \"App exited with code: $?\")"
     ]
   }
 }

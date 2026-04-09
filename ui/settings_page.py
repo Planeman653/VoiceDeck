@@ -244,7 +244,6 @@ class SettingsPage(QWidget):
         # Load available devices
         self._load_devices()
 
-        device_layout.addStretch()
         device_layout.addWidget(device_section)
 
         # Save button
@@ -261,7 +260,7 @@ class SettingsPage(QWidget):
             }
         """)
         save_btn.clicked.connect(self._on_save)
-        ai_layout.addWidget(save_btn, alignment=Qt.AlignmentFlag.AlignRight)
+        device_layout.addWidget(save_btn, alignment=Qt.AlignmentFlag.AlignRight)
 
         layout.addWidget(ai_section)
 
@@ -296,18 +295,6 @@ class SettingsPage(QWidget):
         """Handle sensitivity slider change"""
         self.sensitivity_value.setText(str(value))
 
-    def _on_save(self) -> None:
-        """Handle save settings"""
-        sensitivity = self.sensitivity_slider.value() / 100.0
-        language = self.lang_combo.currentText()
-
-        self.config["sensitivity"] = sensitivity
-        self.config["ai_model"] = self.model_combo.currentText()
-        self.config["language"] = language
-        self.config["enable_listening"] = self.listen_checkbox.isChecked()
-
-        QMessageBox.information(self, "Settings Saved", "Settings saved successfully!")
-
     def load_config(self) -> None:
         """Load current config values"""
         self.model_combo.setCurrentText(self.config.get("ai_model", "tiny"))
@@ -328,16 +315,18 @@ class SettingsPage(QWidget):
                 self.input_combo.clear()
                 # Load output devices (only output-capable)
                 for dev in devices:
-                    if dev['max_output_channels'] is not None:
-                        name = dev['name']
+                    out_ch = dev.get('max_output_channels') or dev.get('MaxOutputChannels')
+                    if out_ch is not None and out_ch > 0:
+                        name = dev.get('name', dev.get('Name', ''))
                         if name.strip():
-                            self.output_combo.addItem(name, dev['index'])
+                            self.output_combo.addItem(name, dev.get('index', dev.get('Index', 0)))
                 # Load input devices (only input-capable)
                 for dev in devices:
-                    if dev['max_input_channels'] is not None:
-                        name = dev['name']
+                    in_ch = dev.get('max_input_channels') or dev.get('MaxInputChannels')
+                    if in_ch is not None and in_ch > 0:
+                        name = dev.get('name', dev.get('Name', ''))
                         if name.strip():
-                            self.input_combo.addItem(name, dev['index'])
+                            self.input_combo.addItem(name, dev.get('index', dev.get('Index', 0)))
                 # Set current index from config
                 self._set_device_from_config()
         except Exception as e:

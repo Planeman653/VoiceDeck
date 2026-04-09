@@ -86,9 +86,17 @@ class AudioQueue:
             return self.player.play(item.file_path, volume=item.volume)
         return False
 
-    def stop_queue(self) -> None:
+    def stop(self) -> None:
         """Stop the queue"""
         self.player.stop()
+
+    def stop_queue(self) -> None:
+        """Stop the queue (alias for stop)"""
+        self.stop()
+
+    def pause(self) -> None:
+        """Pause the queue"""
+        self.player.pause()
 
     def toggle_pause(self) -> None:
         """Toggle pause state"""
