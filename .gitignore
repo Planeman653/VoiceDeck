@@ -24,5 +24,6 @@ dist/
 *.spec
 
 #Claude Files
+.claude/
 CLAUDE.md
 learn.md

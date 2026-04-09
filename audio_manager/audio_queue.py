@@ -45,10 +45,7 @@ class AudioQueue:
 
     def current_index(self) -> int:
         """Get current queue index"""
-        if self.player.is_playing():
-            # For simplicity, just return position in list
-            return 0
-        return -1 if not self.queue else 0
+        return 0 if self._on_complete_callback else (0 if self.queue else -1)
 
     @property
     def is_empty(self) -> bool:
@@ -57,16 +54,19 @@ class AudioQueue:
 
     def is_queueing(self) -> bool:
         """Check if queue is actively queueing items"""
-        return self.player.is_playing() and not self._is_paused
+        return not self._is_paused and len(self.queue) > 0
 
     def _schedule_next_if_needed(self) -> None:
         """Schedule next item when current finishes"""
-        if not self.player.is_playing() and self.queue:
-            item = self.queue.pop(0)
-            self.player.play(item.file_path, volume=item.volume)
-        elif not self.queue:
-            # No queue items, stop if playing
-            if self.player.is_playing():
+        # Directly check stream state without using is_playing()
+        stream = self.player._stream
+        is_stopped = (stream is None) or (stream.get_state() in ('stopped', 'finished')) if stream else True
+
+        if is_stopped:
+            if self.queue:
+                item = self.queue.pop(0)
+                self.player.play(item.file_path, volume=item.volume)
+            else:
                 self.player.stop()
 
     def _on_complete(self) -> None:
@@ -104,4 +104,9 @@ class AudioQueue:
         if self._is_paused:
             self.player.pause()
         else:
-            self.player.resume()
+            # Resume only if there's a stream
+            if self.player._stream:
+                try:
+                    self.player._stream.start()
+                except Exception:
+                    pass

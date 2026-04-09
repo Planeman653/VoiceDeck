@@ -120,6 +120,71 @@ class MainWindow(QMainWindow):
         self.status_bar.setAlignment(Qt.AlignmentFlag.AlignCenter)
         main_layout.addWidget(self.status_bar)
 
+    def on_audio_loaded(self, filename: str, count: int = 0) -> None:
+        """Callback when audio is loaded"""
+        self.status_bar.setText(f"Loaded: {filename}")
+
+    def on_audio_complete(self, filename: str) -> None:
+        """Callback when audio completes playback"""
+        self.status_bar.setText(f"Playing: {filename}")
+
+    def on_trigger_matched(self, filename: str) -> None:
+        """Callback when trigger is matched"""
+        self.media_bar.set_track(filename)
+        self.status_bar.setText(f"Trigger matched: {filename}")
+        self.media_bar.play()
+
+    def play(self) -> None:
+        """Play current audio"""
+        if self.audio_queue.is_queueing():
+            self.media_bar.update_playing_state(True)
+            self.media_bar.play()
+        else:
+            self.media_bar.play()
+
+    def play_current_track(self) -> None:
+        """Handle manual play request"""
+        if self.audio_queue.is_queueing():
+            self.status_bar.setText("Now playing...")
+        else:
+            self.status_bar.setText("Ready to play")
+
+    def _on_play_requested(self) -> None:
+        """Handle play button click in media bar"""
+        # Clear pause state before playing
+        self.audio_queue._is_paused = False
+        self.media_bar.play()
+
+    def pause(self) -> None:
+        """Pause playback"""
+        self.media_bar.pause()
+        self.media_bar.update_playing_state(False)
+
+    def stop(self) -> None:
+        """Stop playback"""
+        self.media_bar.stop()
+
+    def toggle_pause(self) -> None:
+        """Toggle pause state"""
+        if self.audio_queue.is_queueing():
+            self.media_bar.pause()
+        else:
+            self.media_bar.play()
+
+    def on_file_selected(self, filename: str) -> None:
+        """Load selected file into media bar"""
+        if filename:
+            self.media_bar.set_track(filename)
+            self.status_bar.setText(f"Ready: {filename}")
+
+    def get_audio_queue(self) -> "AudioQueue":
+        """Get audio queue"""
+        return self.audio_queue
+
+    def get_trigger_classifier(self) -> "TriggerClassifier":
+        """Get trigger classifier"""
+        return self.trigger_classifier
+
     def setup_microphone(self, sensitivity: float) -> None:
         """
         Setup microphone listening.
@@ -138,14 +203,6 @@ class MainWindow(QMainWindow):
             audio_queue=self.audio_queue
         )
         dialog.exec()
-
-    def __init__(self, trigger_classifier, audio_queue, config, parent=None):
-        super().__init__()
-        self.trigger_classifier = trigger_classifier
-        self.audio_queue = audio_queue
-        self.config = config
-        self.parent = parent
-        self.setup_ui()
 
     def on_audio_loaded(self, filename: str, count: int = 0) -> None:
         """Callback when audio is loaded"""

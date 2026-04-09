@@ -244,8 +244,6 @@ class SettingsPage(QWidget):
         # Load available devices
         self._load_devices()
 
-        device_layout.addWidget(device_section)
-
         # Save button
         save_btn = QPushButton("Save Settings")
         save_btn.setFixedHeight(35)
