@@ -31,7 +31,9 @@ def main():
     "ai_model": "tiny",
     "sensitivity": 50,
     "enable_listening": true,
-    "language": "en"
+    "language": "en",
+    "output_device_index": null,
+    "input_device_index": null
 }""")
 
     # Load config
@@ -39,9 +41,13 @@ def main():
         config = json.load(f)
 
     # Initialize audio player
+    output_device = config.get("output_device_index")
+    input_device = config.get("input_device_index")
     audio_player = AudioPlayer(
-        volume=config["default_volume"],
-        audio_folder=Path(config["audio_folder"])
+        volume=config.get("default_volume", 1.0),
+        audio_folder=Path(config["audio_folder"]),
+        output_device=output_device,
+        input_device=input_device
     )
 
     # Initialize audio queue

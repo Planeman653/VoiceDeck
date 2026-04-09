@@ -101,6 +101,68 @@ class SettingsPage(QWidget):
 
         ai_layout.addLayout(listen_layout)
 
+        # Device Settings Section
+        device_section = QWidget()
+        device_layout = QVBoxLayout(device_section)
+        device_layout.setSpacing(8)
+
+        device_title = QLabel("Audio Devices")
+        device_title.setFont(QFont("Arial", 14, QFont.Weight.Bold))
+        device_title.setStyleSheet("color: #4a9eff;")
+        device_layout.addWidget(device_title)
+
+        # Output device selection
+        output_layout = QHBoxLayout()
+        output_label = QLabel("Output Device:")
+        output_label.setFixedWidth(90)
+        output_layout.addWidget(output_label)
+
+        self.output_combo = QComboBox()
+        self.output_combo.setFixedHeight(30)
+        self.output_combo.setStyleSheet("""
+            QComboBox {
+                padding: 2px 6px;
+            }
+        """)
+        self.output_combo.currentIndexChanged.connect(self._on_output_device_changed)
+        output_layout.addWidget(self.output_combo)
+
+        output_hint = QLabel("(Speakers/Headphones)")
+        output_hint.setFixedWidth(150)
+        output_hint.setStyleSheet("color: #888; font-size: 10px;")
+        output_layout.addWidget(output_hint)
+
+        device_layout.addLayout(output_layout)
+
+        # Input device selection
+        input_layout = QHBoxLayout()
+        input_label = QLabel("Input Device:")
+        input_label.setFixedWidth(90)
+        input_layout.addWidget(input_label)
+
+        self.input_combo = QComboBox()
+        self.input_combo.setFixedHeight(30)
+        self.input_combo.setStyleSheet("""
+            QComboBox {
+                padding: 2px 6px;
+            }
+        """)
+        self.input_combo.currentIndexChanged.connect(self._on_input_device_changed)
+        input_layout.addWidget(self.input_combo)
+
+        input_hint = QLabel("(Microphone)")
+        input_hint.setFixedWidth(100)
+        input_hint.setStyleSheet("color: #888; font-size: 10px;")
+        input_layout.addWidget(input_hint)
+
+        device_layout.addLayout(input_layout)
+
+        # Load available devices
+        self._load_devices()
+
+        device_layout.addStretch()
+        device_layout.addWidget(device_section)
+
         # Save button
         save_btn = QPushButton("Save Settings")
         save_btn.setFixedHeight(35)
@@ -136,6 +198,7 @@ class SettingsPage(QWidget):
             "Features:\n"
             "- Local AI-powered trigger recognition\n"
             "- Configurable sensitivity\n"
+            "- Device selection (Input/Output)\n"
             "- Sequential playback\n"
             "- Tray icon support"
         )
@@ -168,3 +231,82 @@ class SettingsPage(QWidget):
         self.sensitivity_value.setText(str(self.sensitivity_slider.value()))
         self.lang_combo.setCurrentText(self.config.get("language", "en"))
         self.listen_checkbox.setChecked(self.config.get("enable_listening", True))
+
+    def _load_devices(self) -> None:
+        """Load available audio devices from config"""
+        try:
+            from audio_manager import AudioPlayer
+            player = AudioPlayer()
+            devices = player.get_devices()
+            if devices:
+                # Clear existing items
+                self.output_combo.clear()
+                self.input_combo.clear()
+                # Load output devices (only output-capable)
+                for dev in devices:
+                    if dev['max_output_channels'] is not None:
+                        name = dev['name']
+                        if name.strip():
+                            self.output_combo.addItem(name, dev['index'])
+                # Load input devices (only input-capable)
+                for dev in devices:
+                    if dev['max_input_channels'] is not None:
+                        name = dev['name']
+                        if name.strip():
+                            self.input_combo.addItem(name, dev['index'])
+                # Set current index from config
+                self._set_device_from_config()
+        except Exception as e:
+            print(f"Error loading devices: {e}")
+
+    def _set_device_from_config(self) -> None:
+        """Set device selection from config values"""
+        try:
+            from audio_manager import AudioPlayer
+            player = AudioPlayer()
+            # Try to set devices from current AudioPlayer instance
+            if hasattr(player, 'output_device') and player.output_device is not None:
+                self.output_combo.setCurrentIndex(player.output_device)
+            if hasattr(player, 'input_device') and player.input_device is not None:
+                self.input_combo.setCurrentIndex(player.input_device)
+        except Exception:
+            pass
+
+    def _on_output_device_changed(self, index: int) -> None:
+        """Handle output device change"""
+        if index >= 0:
+            device_index = self.output_combo.itemData(index)
+            try:
+                from audio_manager import AudioPlayer
+                player = AudioPlayer()
+                player.set_device("output", device_index)
+            except Exception:
+                pass
+
+    def _on_input_device_changed(self, index: int) -> None:
+        """Handle input device change"""
+        if index >= 0:
+            device_index = self.input_combo.itemData(index)
+            try:
+                from audio_manager import AudioPlayer
+                player = AudioPlayer()
+                player.set_device("input", device_index)
+            except Exception:
+                pass
+
+    def _on_save(self) -> None:
+        """Handle save settings"""
+        sensitivity = self.sensitivity_slider.value() / 100.0
+        language = self.lang_combo.currentText()
+        enable_listening = self.listen_checkbox.isChecked()
+
+        self.config["sensitivity"] = sensitivity
+        self.config["ai_model"] = self.model_combo.currentText()
+        self.config["language"] = language
+        self.config["enable_listening"] = enable_listening
+
+        # Save device settings
+        self.config["output_device_index"] = self.output_combo.currentIndex() if self.output_combo.currentIndex() >= 0 else None
+        self.config["input_device_index"] = self.input_combo.currentIndex() if self.input_combo.currentIndex() >= 0 else None
+
+        QMessageBox.information(self, "Settings Saved", "Settings saved successfully!")

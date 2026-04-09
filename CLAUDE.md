@@ -2,6 +2,9 @@
 
 ## Commands
 
+## On Every Run
+Please check the ./MISTAKES.md file for mistakes that you have made. Keep these in mind moving forward so that you do not make the same mistakes again. If a mistake with your own work is identified, please place that in the mistakes.md file.
+
 ### Run the app
 ```bash
 python main.py

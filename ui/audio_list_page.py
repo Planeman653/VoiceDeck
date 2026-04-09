@@ -2,8 +2,9 @@
 import sys
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QLineEdit,
-    QCheckBox, QMessageBox, QTableWidget, QTableWidgetItem, QFileDialog, QInputDialog, QDoubleSpinBox, QDialog, QVBoxLayout
+    QCheckBox, QMessageBox, QTableWidget, QTableWidgetItem, QFileDialog, QInputDialog, QDoubleSpinBox, QDialog
 )
+from PyQt6.QtGui import QAction
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 
@@ -69,7 +70,9 @@ class AudioListPage(QWidget):
         self.table.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
         self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.table.setAlternatingRowColors(True)
-        self.table.currentRowChanged.connect(self._on_row_selected)
+        selection_model = self.table.selectionModel()
+        if selection_model:
+            selection_model.currentRowChanged.connect(lambda idx: self._on_row_selected(idx.row()))
         self.table.itemDoubleClicked.connect(self._on_double_click)
         layout.addWidget(self.table)
 
@@ -215,13 +218,13 @@ class AudioListPage(QWidget):
         volume_item = self.table.item(row, 2)
 
         # Edit trigger phrase
-        trigger = trigger_item.text()
-        trigger_ok, trigger = QInputDialog.getText(
+        original_trigger = trigger_item.text()
+        trigger, trigger_ok = QInputDialog.getText(
             self,
             "Edit Trigger Phrase",
             "Trigger phrase:",
-            QLineEdit.Normal,
-            trigger
+            QLineEdit.EchoMode.Normal,
+            original_trigger
         )
 
         if not trigger_ok:

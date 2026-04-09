@@ -14,7 +14,14 @@
       "Bash(python:*)",
       "Bash(xcopy \"C:\\\\Users\\\\james\\\\Desktop\\\\Coding\\\\Projects\\\\VoiceDeck\\\\*.*\" \"C:\\\\Users\\\\james\\\\Downloads\\\\VoiceDeck-0.0.2\\\\\\\\\" /E /I /Y)",
       "Bash(copy:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(where python:*)",
+      "Bash(C:\\\\Python314\\\\python.exe:*)",
+      "Bash(\"C:\\\\Python314\\\\python.exe\" main.py)",
+      "Bash(\"C:\\\\Python314\\\\python.exe\" -u main.py)",
+      "Bash(\"C:\\\\Python314\\\\python.exe\" -c \"from audio_manager import AudioPlayer; print\\('OK'\\)\")",
+      "Bash('C:\\\\Python314\\\\python.exe' -c ':*)",
+      "Bash(\"C:\\\\Python314\\\\python.exe\" -c \"from ui import SettingsPage; print\\('SettingsPage import OK'\\)\")"
     ]
   }
 }
