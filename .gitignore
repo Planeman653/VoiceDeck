@@ -22,3 +22,7 @@ build/
 dist/
 *.manifest
 *.spec
+
+#Claude Files
+CLAUDE.md
+learn.md
