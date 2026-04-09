@@ -42,6 +42,23 @@ class SettingsPage(QWidget):
         self.model_combo = QComboBox()
         self.model_combo.addItems(self.trigger_classifier.MODEL_SIZES)
         self.model_combo.setCurrentText("tiny")
+        self.model_combo.setFixedHeight(30)
+        self.model_combo.setStyleSheet("""
+            QComboBox {
+                padding: 2px 6px;
+                background-color: #2b2b2b;
+                color: white;
+                selection-background-color: #4a9eff;
+            }
+            QComboBox::drop-down {
+                border: none;
+            }
+            QComboBox::down-arrow {
+                width: 12px;
+                height: 12px;
+                image: none;
+            }
+        """)
         model_layout.addWidget(self.model_combo)
 
         ai_layout.addLayout(model_layout)
@@ -56,10 +73,19 @@ class SettingsPage(QWidget):
         self.sensitivity_slider.setRange(0, 100)
         self.sensitivity_slider.setValue(50)  # Default 50%
         self.sensitivity_slider.setSingleStep(5)
-        self.sensitivity_slider.setFixedHeight(30)  # Compact height
+        self.sensitivity_slider.setFixedHeight(30)
         self.sensitivity_slider.setStyleSheet("""
             QSpinBox {
-                padding: 2px 6px;
+                padding: 6px 10px;
+                background-color: #2b2b2b;
+                color: white;
+                border: 2px solid #3b3b3b;
+                selection-background-color: #4a9eff;
+                font-size: 12px;
+            }
+            QSpinBox::up-button, QSpinBox::down-button {
+                background-color: #4a4a6a;
+                border: none;
             }
         """)
         self.sensitivity_slider.valueChanged.connect(self._on_sensitivity_changed)
@@ -67,6 +93,16 @@ class SettingsPage(QWidget):
 
         self.sensitivity_value = QLabel("50")
         self.sensitivity_value.setFixedWidth(50)
+        self.sensitivity_value.setStyleSheet("""
+            QLabel {
+                padding: 4px 8px;
+                background-color: #2b2b2b;
+                color: white;
+                border: 2px solid #3b3b3b;
+                font-weight: bold;
+                font-size: 12px;
+            }
+        """)
         sensitivity_layout.addWidget(self.sensitivity_value)
 
         sensitivity_hint = QLabel("(0 = Exact match, 100 = Loose)")
@@ -85,6 +121,23 @@ class SettingsPage(QWidget):
         self.lang_combo = QComboBox()
         self.lang_combo.addItems(["en", "es", "fr", "de", "it", "pt", "ru", "ja", "zh"])
         self.lang_combo.setCurrentText("en")
+        self.lang_combo.setFixedHeight(30)
+        self.lang_combo.setStyleSheet("""
+            QComboBox {
+                padding: 2px 6px;
+                background-color: #2b2b2b;
+                color: white;
+                selection-background-color: #4a9eff;
+            }
+            QComboBox::drop-down {
+                border: none;
+            }
+            QComboBox::down-arrow {
+                width: 12px;
+                height: 12px;
+                image: none;
+            }
+        """)
         lang_layout.addWidget(self.lang_combo)
 
         ai_layout.addLayout(lang_layout)
@@ -97,6 +150,13 @@ class SettingsPage(QWidget):
 
         self.listen_checkbox = QCheckBox("On")
         self.listen_checkbox.setChecked(True)
+        self.listen_checkbox.setStyleSheet("""
+            QCheckBox {
+                color: white;
+                background-color: #2b2b2b;
+                padding: 4px 8px;
+            }
+        """)
         listen_layout.addWidget(self.listen_checkbox)
 
         ai_layout.addLayout(listen_layout)
@@ -115,6 +175,7 @@ class SettingsPage(QWidget):
         output_layout = QHBoxLayout()
         output_label = QLabel("Output Device:")
         output_label.setFixedWidth(90)
+        output_label.setStyleSheet("color: #ccc;")
         output_layout.addWidget(output_label)
 
         self.output_combo = QComboBox()
@@ -122,6 +183,17 @@ class SettingsPage(QWidget):
         self.output_combo.setStyleSheet("""
             QComboBox {
                 padding: 2px 6px;
+                background-color: #2b2b2b;
+                color: white;
+                selection-background-color: #4a9eff;
+            }
+            QComboBox::drop-down {
+                border: none;
+            }
+            QComboBox::down-arrow {
+                width: 12px;
+                height: 12px;
+                image: none;
             }
         """)
         self.output_combo.currentIndexChanged.connect(self._on_output_device_changed)
@@ -138,6 +210,7 @@ class SettingsPage(QWidget):
         input_layout = QHBoxLayout()
         input_label = QLabel("Input Device:")
         input_label.setFixedWidth(90)
+        input_label.setStyleSheet("color: #ccc;")
         input_layout.addWidget(input_label)
 
         self.input_combo = QComboBox()
@@ -145,6 +218,17 @@ class SettingsPage(QWidget):
         self.input_combo.setStyleSheet("""
             QComboBox {
                 padding: 2px 6px;
+                background-color: #2b2b2b;
+                color: white;
+                selection-background-color: #4a9eff;
+            }
+            QComboBox::drop-down {
+                border: none;
+            }
+            QComboBox::down-arrow {
+                width: 12px;
+                height: 12px;
+                image: none;
             }
         """)
         self.input_combo.currentIndexChanged.connect(self._on_input_device_changed)

@@ -21,7 +21,8 @@
       "Bash(\"C:\\\\Python314\\\\python.exe\" -u main.py)",
       "Bash(\"C:\\\\Python314\\\\python.exe\" -c \"from audio_manager import AudioPlayer; print\\('OK'\\)\")",
       "Bash('C:\\\\Python314\\\\python.exe' -c ':*)",
-      "Bash(\"C:\\\\Python314\\\\python.exe\" -c \"from ui import SettingsPage; print\\('SettingsPage import OK'\\)\")"
+      "Bash(\"C:\\\\Python314\\\\python.exe\" -c \"from ui import SettingsPage; print\\('SettingsPage import OK'\\)\")",
+      "Bash(taskstop task=bnx4zgf4s:*)"
     ]
   }
 }

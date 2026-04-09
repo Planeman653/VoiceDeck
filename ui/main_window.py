@@ -75,6 +75,10 @@ class MainWindow(QMainWindow):
         # Connect row selection to media bar
         self.audio_page.current_file_changed.connect(self.on_file_selected)
 
+        # Connect media bar signals to main window
+        self.media_bar.play_current_requested.connect(self.play_current_track)
+        self.media_bar.play_requested.connect(self._on_play_requested)
+
         # Upload button
         self.upload_btn = QPushButton("Upload MP3")
         self.upload_btn.setFixedHeight(40)
@@ -101,6 +105,8 @@ class MainWindow(QMainWindow):
         tab_bar_layout.addWidget(self.tabs, stretch=1)
 
         main_layout.addLayout(tab_bar_layout)
+
+        # Play button in media bar connects to main window play method
 
         # Status bar
         self.status_bar = QLabel("Ready")
@@ -133,6 +139,14 @@ class MainWindow(QMainWindow):
         )
         dialog.exec()
 
+    def __init__(self, trigger_classifier, audio_queue, config, parent=None):
+        super().__init__()
+        self.trigger_classifier = trigger_classifier
+        self.audio_queue = audio_queue
+        self.config = config
+        self.parent = parent
+        self.setup_ui()
+
     def on_audio_loaded(self, filename: str, count: int = 0) -> None:
         """Callback when audio is loaded"""
         self.status_bar.setText(f"Loaded: {filename}")
@@ -149,6 +163,21 @@ class MainWindow(QMainWindow):
 
     def play(self) -> None:
         """Play current audio"""
+        if self.audio_queue.is_queueing():
+            self.media_bar.update_playing_state(True)
+            self.media_bar.play()
+        else:
+            self.media_bar.play()
+
+    def play_current_track(self) -> None:
+        """Handle manual play request"""
+        if self.audio_queue.is_queueing():
+            self.status_bar.setText("Now playing...")
+        else:
+            self.status_bar.setText("Ready to play")
+
+    def _on_play_requested(self) -> None:
+        """Handle play button click in media bar"""
         if self.audio_queue.is_queueing():
             self.media_bar.update_playing_state(True)
             self.media_bar.play()

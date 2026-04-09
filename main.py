@@ -76,12 +76,18 @@ def main():
     main_window = MainWindow(
         trigger_classifier=trigger_classifier,
         audio_queue=audio_queue,
-        config=config
+        config=config,
+        parent=None
     )
 
     # Set window properties
     main_window.setWindowTitle("VoiceDeck - Voice Activated Audio Player")
     main_window.setMinimumSize(600, 400)
+
+    # Connect media bar play signal to main window
+    main_window.media_bar.play_requested.connect(lambda: audio_queue.play())
+    main_window.media_bar.stop_requested.connect(audio_queue.stop)
+    main_window.media_bar.pause_requested.connect(audio_queue.pause)
 
     # Setup microphone listening if enabled and streamer is available
     if config.get("enable_listening", True) and audio_streamer:

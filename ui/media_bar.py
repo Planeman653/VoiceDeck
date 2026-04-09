@@ -17,6 +17,7 @@ class MediaBar(QWidget):
     volume_changed = pyqtSignal(int)
     status_changed = pyqtSignal(str)
     track_changed = pyqtSignal(str)
+    play_current_requested = pyqtSignal()  # For manual play of current track
 
     def __init__(self):
         super().__init__()
@@ -76,6 +77,10 @@ class MediaBar(QWidget):
     def play(self) -> None:
         """Emitted when play is requested"""
         self.play_requested.emit()
+
+    def play_current(self) -> None:
+        """Play current track manually"""
+        self.play_current_requested.emit()
 
     def pause(self) -> None:
         """Emitted when pause is requested"""
